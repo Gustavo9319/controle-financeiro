@@ -1,0 +1,141 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body {
+    background-color: #f0f2f5;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    padding: 10px;
+}
+
+.container {
+    max-width: 500px;
+    width: 100%;
+    background: white;
+    border-radius: 15px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+}
+
+h1, h2 {
+    color: #333;
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+input, select, button {
+    padding: 12px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 16px;
+    outline: none;
+}
+
+input:focus, select:focus {
+    border-color: #007bff;
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.3);
+}
+
+button {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+button:hover {
+    background-color: #0056b3;
+}
+
+.balance {
+    margin: 20px 0;
+    text-align: center;
+    background: #e9f7ef;
+    padding: 15px;
+    border-radius: 8px;
+}
+
+.actions, .report-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    justify-content: center;
+    margin: 20px 0;
+}
+
+.actions button, .report-actions button {
+    flex: 1;
+    min-width: 120px;
+}
+
+.hidden {
+    display: none;
+}
+
+#category-list {
+    list-style: none;
+    margin: 20px 0;
+}
+
+#category-list li {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+    background: #f9f9f9;
+    margin-bottom: 10px;
+    border-radius: 8px;
+}
+
+#category-list button {
+    background: #dc3545;
+    padding: 5px 10px;
+    font-size: 14px;
+}
+
+#category-list button:hover {
+    background: #c82333;
+}
+
+#summary-details {
+    margin-top: 20px;
+}
+
+canvas {
+    margin: 20px 0;
+}
+
+@media (max-width: 600px) {
+    .container {
+        padding: 15px;
+    }
+
+    h1, h2 {
+        font-size: 1.5em;
+    }
+
+    input, select, button {
+        font-size: 14px;
+    }
+
+    .actions button, .report-actions button {
+        min-width: 100px;
+    }
+}
