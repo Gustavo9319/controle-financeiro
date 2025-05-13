@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Controle Financeiro</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="lib/fontawesome/css/all.min.css">
+    <link rel="manifest" href="manifest.json">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <script src="lib/chart.js"></script>
+    <script src="lib/jspdf.umd.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <section id="main-screen">
+            <h1><i class="fas fa-wallet"></i> Controle Financeiro</h1>
+            <form id="expense-form">
+                <input type="text" id="description" placeholder="Descrição" required>
+                <input type="date" id="date" required>
+                <input type="text" id="account" placeholder="Conta" required>
+                <select id="category" required>
+                    <option value="">Selecione a Categoria</option>
+                </select>
+                <select id="type" required>
+                    <option value="entrada">Entrada</option>
+                    <option value="saida">Saída</option>
+                </select>
+                <input type="number" id="amount" placeholder="Valor" step="0.01" min="0.01" required>
+                <button type="submit"><i class="fas fa-save"></i> Registrar</button>
+            </form>
+            <div class="balance">
+                <h2>Saldo Atual: <span id="current-balance">R$ 0,00</span></h2>
+            </div>
+            <div class="actions">
+                <button onclick="showCategories()"><i class="fas fa-tags"></i> Categorias</button>
+                <button onclick="showSummary()"><i class="fas fa-chart-pie"></i> Resumo</button>
+                <button onclick="showReports()"><i class="fas fa-file-alt"></i> Relatórios</button>
+                <button onclick="backupData()"><i class="fas fa-download"></i> Backup</button>
+                <button onclick="document.getElementById('restore-file').click()"><i class="fas fa-upload"></i> Restaurar</button>
+                <input type="file" id="restore-file" accept=".json" style="display: none;" onchange="restoreData(event)">
+            </div>
+        </section>
+        <section id="categories-screen" class="hidden">
+            <h2><i class="fas fa-tags"></i> Gerenciar Categorias</h2>
+            <form id="category-form">
+                <input type="text" id="category-name" placeholder="Nome da Categoria" required>
+                <input type="number" id="category-budget" placeholder="Orçamento Mensal (R$)" step="0.01" min="0">
+                <button type="submit"><i class="fas fa-plus"></i> Adicionar</button>
+            </form>
+            <ul id="category-list"></ul>
+            <button onclick="backToMain()"><i class="fas fa-arrow-left"></i> Voltar</button>
+        </section>
+        <section id="summary-screen" class="hidden">
+            <h2><i class="fas fa-chart-pie"></i> Resumo de Gastos</h2>
+            <select id="summary-month">
+                <option value="current">Mês Atual</option>
+                <option value="annual">Anual</option>
+                <option value="custom">Personalizado</option>
+            </select>
+            <div id="custom-months" class="hidden">
+                <label>Selecione os Meses:</label>
+                <div id="month-checkboxes"></div>
+            </div>
+            <canvas id="category-chart"></canvas>
+            <div id="summary-details"></div>
+            <button onclick="backToMain()"><i class="fas fa-arrow-left"></i> Voltar</button>
+        </section>
+        <section id="reports-screen" class="hidden">
+            <h2><i class="fas fa-file-alt"></i> Emitir Relatório</h2>
+            <select id="report-type">
+                <option value="monthly">Mês Atual</option>
+                <option value="custom">Escolher Mês</option>
+                <option value="annual">Anual</option>
+            </select>
+            <select id="report-month" class="hidden">
+                <option value="">Selecione o Mês</option>
+            </select>
+            <div class="report-actions">
+                <button onclick="generateReport('screen')"><i class="fas fa-eye"></i> Visualizar</button>
+                <button onclick="generateReport('pdf')"><i class="fas fa-file-pdf"></i> Baixar PDF</button>
+                <button onclick="generateReport('csv')"><i class="fas fa-file-csv"></i> Baixar CSV</button>
+            </div>
+            <div id="report-content"></div>
+            <button onclick="backToMain()"><i class="fas fa-arrow-left"></i> Voltar</button>
+        </section>
+    </div>
+    <script src="script.js"></script>
+    <script>
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('sw.js')
+                .then(() => console.log('Service Worker registrado'))
+                .catch(err => console.error('Erro ao registrar Service Worker:', err));
+        }
+    </script>
+</body>
+</html>
