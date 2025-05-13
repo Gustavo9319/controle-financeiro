@@ -1,16 +1,16 @@
 const CACHE_NAME = 'controle-financeiro-v1';
 const FILES_TO_CACHE = [
-    '/',
-    '/index.html',
-    '/styles.css',
-    '/script.js',
-    '/manifest.json',
-    '/icon.png',
-    '/lib/chart.js',
-    '/lib/jspdf.umd.min.js',
-    '/lib/fontawesome/css/all.min.css',
-    '/lib/fontawesome/webfonts/fa-solid-900.woff2',
-    '/lib/fontawesome/webfonts/fa-regular-400.woff2'
+  '/controle-financeiro/',
+  '/controle-financeiro/index.html',
+  '/controle-financeiro/styles.css',
+  '/controle-financeiro/script.js',
+  '/controle-financeiro/manifest.json',
+  '/controle-financeiro/icon.png',
+  '/controle-financeiro/lib/chart.js',
+  '/controle-financeiro/lib/jspdf.umd.min.js',
+  '/controle-financeiro/lib/fontawesome/css/all.min.css',
+  '/controle-financeiro/lib/fontawesome/webfonts/fa-solid-900.woff2',
+  '/controle-financeiro/lib/fontawesome/webfonts/fa-regular-400.woff2'
 ];
 
 self.addEventListener('install', event => {
