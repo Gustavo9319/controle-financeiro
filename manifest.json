@@ -1,7 +1,7 @@
 {
     "name": "Controle Financeiro",
     "short_name": "Financeiro",
-    "start_url": "/index.html",
+    "start_url": "/controle-financeiro/index.html",
     "display": "standalone",
     "background_color": "#f0f2f5",
     "theme_color": "#007bff",
