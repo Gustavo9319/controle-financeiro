@@ -4,95 +4,373 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Controle Financeiro</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link rel="stylesheet" href="styles.css">
-    <link rel="stylesheet" href="lib/fontawesome/css/all.min.css">
-    <link rel="manifest" href="manifest.json">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <script src="lib/chart.js"></script>
-    <script src="lib/jspdf.umd.min.js"></script>
 </head>
 <body>
-    <div class="container">
-        <section id="main-screen">
-            <h1><i class="fas fa-wallet"></i> Controle Financeiro</h1>
-            <form id="expense-form">
-                <input type="text" id="description" placeholder="Descrição" required>
-                <input type="date" id="date" required>
-                <input type="text" id="account" placeholder="Conta" required>
-                <select id="category" required>
-                    <option value="">Selecione a Categoria</option>
-                </select>
-                <select id="type" required>
-                    <option value="entrada">Entrada</option>
-                    <option value="saida">Saída</option>
-                </select>
-                <input type="number" id="amount" placeholder="Valor" step="0.01" min="0.01" required>
-                <button type="submit"><i class="fas fa-save"></i> Registrar</button>
-            </form>
-            <div class="balance">
-                <h2>Saldo Atual: <span id="current-balance">R$ 0,00</span></h2>
+    <section id="main-screen">
+        <div class="container">
+            <div class="month-selector">
+                <span id="current-month" onclick="showMonthPickerModal()">Maio/2025 <i class="fas fa-chevron-down"></i></span>
+                <div id="month-picker-modal" class="transaction-modal hidden">
+                    <label for="month-select">Mês:</label>
+                    <select id="month-select">
+                        <option value="01">Janeiro</option>
+                        <option value="02">Fevereiro</option>
+                        <option value="03">Março</option>
+                        <option value="04">Abril</option>
+                        <option value="05">Maio</option>
+                        <option value="06">Junho</option>
+                        <option value="07">Julho</option>
+                        <option value="08">Agosto</option>
+                        <option value="09">Setembro</option>
+                        <option value="10">Outubro</option>
+                        <option value="11">Novembro</option>
+                        <option value="12">Dezembro</option>
+                    </select>
+                    <label for="year-select">Ano:</label>
+                    <select id="year-select">
+                        <option value="2020">2020</option>
+                        <option value="2021">2021</option>
+                        <option value="2022">2022</option>
+                        <option value="2023">2023</option>
+                        <option value="2024">2024</option>
+                        <option value="2025">2025</option>
+                        <option value="2026">2026</option>
+                        <option value="2027">2027</option>
+                        <option value="2028">2028</option>
+                        <option value="2029">2029</option>
+                        <option value="2030">2030</option>
+                    </select>
+                    <button onclick="applyMonthYearSelection()">Confirmar</button>
+                </div>
             </div>
-            <div class="actions">
-                <button onclick="showCategories()"><i class="fas fa-tags"></i> Categorias</button>
-                <button onclick="showSummary()"><i class="fas fa-chart-pie"></i> Resumo</button>
-                <button onclick="showReports()"><i class="fas fa-file-alt"></i> Relatórios</button>
-                <button onclick="backupData()"><i class="fas fa-download"></i> Backup</button>
-                <button onclick="document.getElementById('restore-file').click()"><i class="fas fa-upload"></i> Restaurar</button>
-                <input type="file" id="restore-file" accept=".json" style="display: none;" onchange="restoreData(event)">
+
+            <div class="total-balance" onclick="showAccounts()">
+                <h2>Saldo Total</h2>
+                <p id="total-balance">R$ 0,00</p>
             </div>
-        </section>
-        <section id="categories-screen" class="hidden">
-            <h2><i class="fas fa-tags"></i> Gerenciar Categorias</h2>
-            <form id="category-form">
-                <input type="text" id="category-name" placeholder="Nome da Categoria" required>
-                <input type="number" id="category-budget" placeholder="Orçamento Mensal (R$)" step="0.01" min="0">
-                <button type="submit"><i class="fas fa-plus"></i> Adicionar</button>
-            </form>
-            <ul id="category-list"></ul>
-            <button onclick="backToMain()"><i class="fas fa-arrow-left"></i> Voltar</button>
-        </section>
-        <section id="summary-screen" class="hidden">
-            <h2><i class="fas fa-chart-pie"></i> Resumo de Gastos</h2>
-            <select id="summary-month">
-                <option value="current">Mês Atual</option>
-                <option value="annual">Anual</option>
-                <option value="custom">Personalizado</option>
-            </select>
-            <div id="custom-months" class="hidden">
-                <label>Selecione os Meses:</label>
-                <div id="month-checkboxes"></div>
+
+            <button id="clear-transactions-btn">Limpar Transações</button>
+
+            <div class="income-expense">
+                <div class="income" onclick="showEntries()">
+                    <i class="fas fa-arrow-up"></i>
+                    <h3>Entradas</h3>
+                    <p id="total-income">R$ 0,00</p>
+                </div>
+                <div class="expense" onclick="showExpenses()">
+                    <i class="fas fa-arrow-down"></i>
+                    <h3>Saídas</h3>
+                    <p id="total-expense">R$ 0,00</p>
+                </div>
             </div>
-            <canvas id="category-chart"></canvas>
-            <div id="summary-details"></div>
-            <button onclick="backToMain()"><i class="fas fa-arrow-left"></i> Voltar</button>
-        </section>
-        <section id="reports-screen" class="hidden">
-            <h2><i class="fas fa-file-alt"></i> Emitir Relatório</h2>
-            <select id="report-type">
-                <option value="monthly">Mês Atual</option>
-                <option value="custom">Escolher Mês</option>
-                <option value="annual">Anual</option>
-            </select>
-            <select id="report-month" class="hidden">
-                <option value="">Selecione o Mês</option>
-            </select>
-            <div class="report-actions">
-                <button onclick="generateReport('screen')"><i class="fas fa-eye"></i> Visualizar</button>
-                <button onclick="generateReport('pdf')"><i class="fas fa-file-pdf"></i> Baixar PDF</button>
-                <button onclick="generateReport('csv')"><i class="fas fa-file-csv"></i> Baixar CSV</button>
+
+            <div class="accounts-section">
+                <h2>Contas <button id="manage-accounts-btn" onclick="showManageAccounts()">Gerenciar Contas</button></h2>
+                <div class="month-filter">
+                    <span id="accounts-month" onclick="showAccountsMonthPicker()">Maio/2025 <i class="fas fa-chevron-down"></i></span>
+                    <input type="month" id="accounts-month-picker" class="hidden" onchange="updateAccountsMonth(this.value)">
+                </div>
+                <div id="accounts-list"></div>
+                <div class="section-total">Total: <span id="accounts-total">R$ 0,00</span></div>
             </div>
-            <div id="report-content"></div>
-            <button onclick="backToMain()"><i class="fas fa-arrow-left"></i> Voltar</button>
-        </section>
-    </div>
+
+            <div class="saidas-section">
+                <h2>Saídas</h2>
+                <div class="month-filter">
+                    <span id="expenses-month" onclick="showExpensesMonthPicker()">Maio/2025 <i class="fas fa-chevron-down"></i></span>
+                    <input type="month" id="expenses-month-picker" class="hidden" onchange="updateExpensesMonth(this.value)">
+                </div>
+                <div id="expenses-list"></div>
+                <div class="section-total">Total: <span id="expenses-total">R$ 0,00</span></div>
+            </div>
+
+            <div class="entries-section">
+                <h2>Entradas</h2>
+                <div class="month-filter">
+                    <span id="entry-month" onclick="showEntryMonthPicker()">Total <i class="fas fa-chevron-down"></i></span>
+                    <input type="month" id="entry-month-picker" class="hidden" onchange="updateEntryMonth(this.value)">
+                </div>
+                <div id="entry-list"></div>
+                <div class="section-total">Total: <span id="entry-total">R$ 0,00</span></div>
+            </div>
+
+            <div class="income-sources-section">
+                <h2>Fontes de Renda <button id="manage-income-sources-btn" onclick="showManageIncomeSources()">Gerenciar Fontes de Renda</button></h2>
+                <div class="month-filter">
+                    <span id="income-sources-month" onclick="showIncomeSourcesMonthPicker()">Maio/2025 <i class="fas fa-chevron-down"></i></span>
+                    <input type="month" id="income-sources-month-picker" class="hidden" onchange="updateIncomeSourcesMonth(this.value)">
+                </div>
+                <div id="income-sources-list"></div>
+                <div class="section-total">Total: <span id="income-sources-total">R$ 0,00</span></div>
+            </div>
+
+            <div class="patrimony-section">
+                <h2>Patrimônio <button id="manage-patrimony-btn" onclick="showManagePatrimony()">Gerenciar Patrimônio</button></h2>
+                <div class="month-filter">
+                    <span id="patrimony-month" onclick="showPatrimonyMonthPicker()">Maio/2025 <i class="fas fa-chevron-down"></i></span>
+                    <input type="month" id="patrimony-month-picker" class="hidden" onchange="updatePatrimonyMonth(this.value)">
+                </div>
+                <div id="patrimony-list"></div>
+                <div class="section-total">Total: <span id="patrimony-total">R$ 0,00</span></div>
+            </div>
+
+            <div class="personal-costs-section">
+                <h2>Custos Pessoais <button id="manage-personal-costs-btn" onclick="showManagePersonalCosts()">Gerenciar Custos Pessoais</button></h2>
+                <div class="month-filter">
+                    <span id="personal-costs-month" onclick="showPersonalCostsMonthPicker()">Maio/2025 <i class="fas fa-chevron-down"></i></span>
+                    <input type="month" id="personal-costs-month-picker" class="hidden" onchange="updatePersonalCostsMonth(this.value)">
+                </div>
+                <div id="personal-costs-list"></div>
+                <div class="section-total">Total: <span id="personal-costs-total">R$ 0,00</span></div>
+            </div>
+
+            <div class="chart-section">
+                <h2>Resumo Gráfico</h2>
+                <div class="month-filter">
+                    <span id="chart-month" onclick="showChartMonthPicker()">Maio/2025 <i class="fas fa-chevron-down"></i></span>
+                    <input type="month" id="chart-month-picker" class="hidden" onchange="updateChartMonth(this.value)">
+                </div>
+                <canvas id="balance-chart"></canvas>
+                <div id="chart-legend"></div>
+            </div>
+        </div>
+
+        <nav class="bottom-menu">
+            <button class="menu-icon" onclick="showTransactions()">
+                <i class="fas fa-exchange-alt"></i>
+                Transações
+            </button>
+            <button class="menu-plus" onclick="toggleTransactionMenu()">
+                <i class="fas fa-plus"></i>
+            </button>
+        </nav>
+
+        <div id="transaction-type-menu" class="transaction-modal hidden">
+            <button onclick="showRegisterExpense()">Registrar Saída</button>
+            <button onclick="showRegisterEntry()">Registrar Entrada</button>
+        </div>
+    </section>
+
+    <section id="accounts-screen" class="hidden">
+        <div class="container">
+            <div class="screen-header">
+                <i class="fas fa-arrow-left" onclick="backToMain()"></i>
+                <h2>Contas</h2>
+                <span id="accounts-month" onclick="showAccountsMonthPicker()">Maio/2025 <i class="fas fa-chevron-down"></i></span>
+                <input type="month" id="accounts-month-picker" class="hidden" onchange="updateAccountsMonth(this.value)">
+            </div>
+            <div class="total-balance">
+                <h2>Saldo Total</h2>
+                <p id="accounts-balance">R$ 0,00</p>
+            </div>
+            <div id="accounts-details"></div>
+        </div>
+    </section>
+
+    <section id="entries-screen" class="hidden">
+        <div class="container">
+            <div class="screen-header">
+                <i class="fas fa-arrow-left" onclick="backToMain()"></i>
+                <h2>Entradas</h2>
+                <span id="entries-month" onclick="showEntriesMonthPicker()">Maio/2025 <i class="fas fa-chevron-down"></i></span>
+                <input type="month" id="entries-month-picker" class="hidden" onchange="updateEntriesMonth(this.value)">
+            </div>
+            <div class="section-total">Total: <span id="entries-total">R$ 0,00</span></div>
+            <div id="entries-list"></div>
+        </div>
+    </section>
+
+    <section id="expenses-screen" class="hidden">
+        <div class="container">
+            <div class="screen-header">
+                <i class="fas fa-arrow-left" onclick="backToMain()"></i>
+                <h2>Saídas</h2>
+                <span id="expenses-month" onclick="showExpensesMonthPicker()">Maio/2025 <i class="fas fa-chevron-down"></i></span>
+                <input type="month" id="expenses-month-picker" class="hidden" onchange="updateExpensesMonth(this.value)">
+            </div>
+            <div class="section-total">Total: <span id="expenses-total">R$ 0,00</span></div>
+            <div id="expenses-list"></div>
+        </div>
+    </section>
+
+    <section id="manage-accounts-screen" class="hidden">
+        <div class="container">
+            <div class="screen-header">
+                <i class="fas fa-arrow-left" onclick="backToMain()"></i>
+                <h2>Gerenciar Contas</h2>
+                <span></span>
+            </div>
+            <div class="manage-form">
+                <form id="account-form">
+                    <input type="text" id="account-name" placeholder="Nome da Conta" required>
+                    <button type="submit" class="action-btn"><i class="fas fa-plus"></i> Adicionar Conta</button>
+                </form>
+            </div>
+            <ul class="manage-list" id="account-list"></ul>
+        </div>
+    </section>
+
+    <section id="manage-categories-screen" class="hidden">
+        <div class="container">
+            <div class="screen-header">
+                <i class="fas fa-arrow-left" onclick="backToMain()"></i>
+                <h2>Gerenciar Categorias</h2>
+                <span></span>
+            </div>
+            <div class="manage-form">
+                <form id="category-form">
+                    <input type="text" id="category-name" placeholder="Nome da Categoria" required>
+                    <button type="submit" class="action-btn"><i class="fas fa-plus"></i> Adicionar Categoria</button>
+                </form>
+            </div>
+            <ul class="manage-list" id="category-list"></ul>
+        </div>
+    </section>
+
+    <section id="manage-entry-categories-screen" class="hidden">
+        <div class="container">
+            <div class="screen-header">
+                <i class="fas fa-arrow-left" onclick="backToMain()"></i>
+                <h2>Gerenciar Categorias de Entrada</h2>
+                <span></span>
+            </div>
+            <div class="manage-form">
+                <form id="entry-category-form">
+                    <input type="text" id="entry-category-name" placeholder="Nome da Categoria" required>
+                    <button type="submit" class="action-btn"><i class="fas fa-plus"></i> Adicionar Categoria</button>
+                </form>
+            </div>
+            <ul class="manage-list" id="entry-category-list"></ul>
+        </div>
+    </section>
+
+    <section id="manage-income-sources-screen" class="hidden">
+        <div class="container">
+            <div class="screen-header">
+                <i class="fas fa-arrow-left" onclick="backToMain()"></i>
+                <h2>Gerenciar Fontes de Renda</h2>
+                <span></span>
+            </div>
+            <div class="manage-form">
+                <form id="income-source-form">
+                    <input type="text" id="income-source-name" placeholder="Nome da Fonte de Renda" required>
+                    <button type="submit" class="action-btn"><i class="fas fa-plus"></i> Adicionar Fonte de Renda</button>
+                </form>
+            </div>
+            <ul class="manage-list" id="income-source-list"></ul>
+        </div>
+    </section>
+
+    <section id="manage-patrimony-screen" class="hidden">
+        <div class="container">
+            <div class="screen-header">
+                <i class="fas fa-arrow-left" onclick="backToMain()"></i>
+                <h2>Gerenciar Patrimônio</h2>
+                <span></span>
+            </div>
+            <div class="manage-form">
+                <form id="patrimony-form">
+                    <input type="text" id="patrimony-name" placeholder="Nome do Patrimônio" required>
+                    <button type="submit" class="action-btn"><i class="fas fa-plus"></i> Adicionar Patrimônio</button>
+                </form>
+            </div>
+            <ul class="manage-list" id="patrimony-list"></ul>
+        </div>
+    </section>
+
+    <section id="manage-personal-costs-screen" class="hidden">
+        <div class="container">
+            <div class="screen-header">
+                <i class="fas fa-arrow-left" onclick="backToMain()"></i>
+                <h2>Gerenciar Custos Pessoais</h2>
+                <span></span>
+            </div>
+            <div class="manage-form">
+                <form id="personal-cost-form">
+                    <input type="text" id="personal-cost-name" placeholder="Nome do Custo Pessoal" required>
+                    <button type="submit" class="action-btn"><i class="fas fa-plus"></i> Adicionar Custo Pessoal</button>
+                </form>
+            </div>
+            <ul class="manage-list" id="personal-cost-list"></ul>
+        </div>
+    </section>
+
+    <section id="transactions-screen" class="hidden">
+        <div class="container">
+            <div class="screen-header">
+                <i class="fas fa-arrow-left" onclick="backToMain()"></i>
+                <h2>Transações</h2>
+                <span id="transactions-month" onclick="showTransactionsMonthPicker()">Maio/2025 <i class="fas fa-chevron-down"></i></span>
+                <input type="month" id="transactions-month-picker" class="hidden" onchange="updateTransactionsMonth(this.value)">
+            </div>
+            <div class="section-total">Saldo Total: <span id="transactions-balance">R$ 0,00</span></div>
+            <div id="transaction-list"></div>
+        </div>
+    </section>
+
+    <section id="register-expense-screen" class="hidden">
+        <div class="container">
+            <div class="screen-header expense-header">
+                <i class="fas fa-arrow-left" onclick="backToMain()"></i>
+                <h2>Registrar Saída</h2>
+                <span></span>
+            </div>
+            <div class="manage-form expense-form">
+                <form id="expense-form">
+                    <input type="date" id="expense-date" required>
+                    <input type="text" id="expense-description" placeholder="Descrição" required>
+                    <input type="number" id="expense-amount" placeholder="Valor" step="0.01" required>
+                    <select id="expense-account" required>
+                        <option value="">Selecione a Conta</option>
+                    </select>
+                    <select id="expense-section" required>
+                        <option value="">Renda, Patrimônio, Custos</option>
+                        <option value="incomeSources">Fontes de Renda</option>
+                        <option value="patrimony">Patrimônio</option>
+                        <option value="personalCosts">Custos Pessoais</option>
+                    </select>
+                    <select id="expense-category" class="hidden" required>
+                        <option value="">Selecione o item</option>
+                    </select>
+                    <button type="submit" class="action-btn"><i class="fas fa-check"></i> Registrar Saída</button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <section id="register-entry-screen" class="hidden">
+        <div class="container">
+            <div class="screen-header">
+                <i class="fas fa-arrow-left" onclick="backToMain()"></i>
+                <h2>Registrar Entrada</h2>
+                <span></span>
+            </div>
+            <div class="manage-form">
+                <form id="entry-form">
+                    <input type="date" id="entry-date" required>
+                    <input type="text" id="entry-description" placeholder="Descrição" required>
+                    <input type="number" id="entry-amount" placeholder="Valor" step="0.01" required>
+                    <select id="entry-account" required>
+                        <option value="">Selecione a Conta</option>
+                    </select>
+                    <select id="entry-section" required>
+                        <option value="">Renda, Patrimônio, Custos</option>
+                        <option value="incomeSources">Fontes de Renda</option>
+                        <option value="patrimony">Patrimônio</option>
+                        <option value="personalCosts">Custos Pessoais</option>
+                    </select>
+                    <select id="entry-category" class="hidden" required>
+                        <option value="">Selecione o item</option>
+                    </select>
+                    <button type="submit" class="action-btn"><i class="fas fa-check"></i> Registrar Entrada</button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="script.js"></script>
-    <script>
-        if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.register('sw.js')
-                .then(() => console.log('Service Worker registrado'))
-                .catch(err => console.error('Erro ao registrar Service Worker:', err));
-        }
-    </script>
 </body>
 </html>
