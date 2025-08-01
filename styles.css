@@ -2,140 +2,684 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-family: 'Inter', sans-serif;
 }
 
 body {
-    background-color: #f0f2f5;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+    background-color: #F9FAFB;
     min-height: 100vh;
-    padding: 10px;
+    padding: 20px 20px 80px;
+    color: #1F2937;
 }
 
 .container {
     max-width: 500px;
-    width: 100%;
-    background: white;
-    border-radius: 15px;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    margin: 0 auto;
+    background: #FFFFFF;
+    border-radius: 16px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
     padding: 20px;
 }
 
-h1, h2 {
-    color: #333;
+.month-selector {
     text-align: center;
     margin-bottom: 20px;
 }
 
-form {
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
-}
-
-input, select, button {
-    padding: 12px;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    font-size: 16px;
-    outline: none;
-}
-
-input:focus, select:focus {
-    border-color: #007bff;
-    box-shadow: 0 0 5px rgba(0, 123, 255, 0.3);
-}
-
-button {
-    background-color: #007bff;
-    color: white;
-    border: none;
-    cursor: pointer;
-    transition: background-color 0.3s;
-    display: flex;
+.month-selector span, .month-filter span {
+    display: inline-flex;
     align-items: center;
-    justify-content: center;
-    gap: 8px;
+    gap: 6px;
+    padding: 8px 16px;
+    background: #F3F4F6;
+    border-radius: 20px;
+    font-size: 1.1em;
+    font-weight: 600;
+    color: #4F46E5;
+    cursor: pointer;
+    transition: background 0.3s;
 }
 
-button:hover {
-    background-color: #0056b3;
+.month-selector span:hover, .month-filter span:hover {
+    background: #E5E7EB;
 }
 
-.balance {
-    margin: 20px 0;
-    text-align: center;
-    background: #e9f7ef;
-    padding: 15px;
-    border-radius: 8px;
-}
-
-.actions, .report-actions {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-    justify-content: center;
-    margin: 20px 0;
-}
-
-.actions button, .report-actions button {
-    flex: 1;
-    min-width: 120px;
-}
-
-.hidden {
+input[type="month"] {
     display: none;
 }
 
-#category-list {
-    list-style: none;
-    margin: 20px 0;
+.total-balance {
+    background: linear-gradient(135deg, #4F46E5, #818CF8);
+    color: white;
+    padding: 20px;
+    border-radius: 12px;
+    text-align: center;
+    margin-bottom: 20px;
+    box-shadow: 0 4px 15px rgba(79, 70, 229, 0.2);
+    cursor: pointer;
+    transition: transform 0.2s;
 }
 
-#category-list li {
+.total-balance:hover {
+    transform: translateY(-2px);
+}
+
+.total-balance h2 {
+    font-size: 1.2em;
+    font-weight: 600;
+    margin-bottom: 5px;
+}
+
+.total-balance p {
+    font-size: 1.8em;
+    font-weight: 700;
+}
+
+.income-expense {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.income, .expense {
+    flex: 1;
+    padding: 15px;
+    border-radius: 12px;
+    text-align: center;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.3s;
+}
+
+.income {
+    background: linear-gradient(135deg, #10B981, #6EE7B7);
+    box-shadow: 0 4px 15px rgba(16, 185, 129, 0.2);
+}
+
+.expense {
+    background: linear-gradient(135deg, #EF4444, #FCA5A5);
+    box-shadow: 0 4px 15px rgba(239, 68, 68, 0.2);
+}
+
+.income:hover, .expense:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+}
+
+.income i, .expense i {
+    font-size: 1.5em;
+    color: white;
+    margin-bottom: 8px;
+}
+
+.income h3, .expense h3 {
+    font-size: 1em;
+    font-weight: 600;
+    color: white;
+    margin-bottom: 5px;
+}
+
+.income p, .expense p {
+    font-size: 1.4em;
+    font-weight: 700;
+    color: white;
+}
+
+.accounts-section, .entries-section, .chart-section {
+    border-radius: 12px;
+    padding: 15px;
+    margin-bottom: 20px;
+}
+
+.entries-section {
+    background: #DCFCE7; /* Light matte green */
+    box-shadow: 0 4px 20px rgba(16, 185, 129, 0.15); /* Greenish glow */
+}
+
+.saidas-section {
+    border-radius: 12px;
+    padding: 15px;
+    margin-bottom: 20px;
+    background: #FEE2E2; /* Red matte */
+    box-shadow: 0 4px 20px rgba(239, 68, 68, 0.15); /* Reddish glow */
+}
+
+.saidas-section h2 {
+    font-size: 1.3em;
+    font-weight: 600;
+    color: #1F2937;
+    margin-bottom: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.saidas-section .month-filter {
+    margin-bottom: 15px;
+}
+
+.saidas-section .section-total {
+    font-size: 1.1em;
+    font-weight: 600;
+    color: #4B5563;
+    margin: 10px 0;
+}
+
+.saidas-section #expenses-list .section-item-value {
+    color: #EF4444; /* Vermelho para saídas */
+}
+
+.saidas-section #expenses-list .section-item-text {
+    color: #1F2937;
+}
+
+.accounts-section, .chart-section {
+    background: #F9FAFB;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+}
+
+.accounts-section h2, .entries-section h2, .chart-section h2 {
+    font-size: 1.3em;
+    font-weight: 600;
+    color: #1F2937;
+    margin-bottom: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.month-filter {
+    margin-bottom: 15px;
+}
+
+.section-total {
+    font-size: 1.1em;
+    font-weight: 600;
+    color: #4B5563;
+    margin: 10px 0;
+}
+
+.action-btn {
+    background: linear-gradient(135deg, #4F46E5, #818CF8);
+    color: white;
+    border: none;
+    padding: 12px;
+    border-radius: 8px;
+    font-size: 1em;
+    font-weight: 600;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.3s;
+}
+
+.action-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(79, 70, 229, 0.3);
+}
+
+.hidden {
+    display: none !important;
+}
+
+.screen-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 15px;
+    background: linear-gradient(135deg, #4F46E5, #818CF8);
+    color: white;
+    border-radius: 12px 12px 0 0;
+    margin: -20px -20px 20px;
+}
+
+.screen-header i {
+    font-size: 1.2em;
+    cursor: pointer;
+}
+
+.screen-header h2 {
+    font-size: 1.3em;
+    font-weight: 600;
+}
+
+.screen-header span {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    padding: 5px 10px;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 20px;
+    font-size: 0.9em;
+    cursor: pointer;
+}
+
+hr {
+    border: 0;
+    border-top: 1px solid #E5E7EB;
+    margin: 15px 0;
+}
+
+#accounts-details p, #entries-list p, #expenses-list p, #transaction-list p, #entry-list p {
+    padding: 10px;
+    background: #FFFFFF;
+    border-radius: 8px;
+    margin-bottom: 8px;
+    font-size: 0.95em;
+    box-shadow: 0 1px 5px rgba(0, 0, 0, 0.05);
+}
+
+.chart-section canvas {
+    margin: 15px 0;
+}
+
+#chart-legend {
+    font-size: 0.9em;
+    line-height: 1.6;
+    text-align: center;
+}
+
+#chart-legend span {
+    margin-right: 5px;
+}
+
+.manage-form {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    margin-bottom: 20px;
+}
+
+.manage-form input, .manage-form select {
+    padding: 15px;
+    border: 1px solid #E5E7EB;
+    border-radius: 8px;
+    font-size: 1em;
+    outline: none;
+    transition: border-color 0.3s, box-shadow 0.3s;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.manage-form input:focus, .manage-form select:focus {
+    border-color: #4F46E5;
+    box-shadow: 0 0 8px rgba(79, 70, 229, 0.2);
+}
+
+.manage-form button {
+    background: linear-gradient(135deg, #4F46E5, #818CF8);
+    color: white;
+    border: none;
+    padding: 12px;
+    border-radius: 8px;
+    font-size: 1em;
+    font-weight: 600;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.3s;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.manage-form button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(79, 70, 229, 0.3);
+}
+
+.manage-form button i {
+    margin-right: 5px;
+}
+
+.manage-list li {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px;
+    background: #F9FAFB;
+    border-radius: 8px;
+    margin-bottom: 10px;
+    box-shadow: 0 1px 5px rgba(0, 0, 0, 0.05);
+}
+
+.manage-list li div {
+    display: flex;
+    gap: 8px;
+}
+
+.manage-list li button {
+    background: none;
+    border: none;
+    font-size: 1em;
+    cursor: pointer;
+    padding: 5px;
+}
+
+.manage-list li button:first-child {
+    color: #4F46E5;
+}
+
+.manage-list li button:last-child {
+    color: #EF4444;
+}
+
+.bottom-menu {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    background: linear-gradient(135deg, #4F46E5, #818CF8);
+    padding: 12px;
+    box-shadow: 0 -2px 15px rgba(0, 0, 0, 0.1);
+}
+
+.menu-icon {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 1em;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 5px;
+    cursor: pointer;
+    transition: transform 0.2s;
+    flex: 1;
+}
+
+.menu-icon i {
+    font-size: 1.3em;
+}
+
+.menu-icon:hover {
+    transform: scale(1.1);
+}
+
+.menu-plus {
+    background: white;
+    border: none;
+    color: #4F46E5;
+    font-size: 1.5em;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    cursor: pointer;
+    animation: pulse 2s infinite;
+    transition: transform 0.2s;
+}
+
+.menu-plus:hover {
+    transform: scale(1.1);
+}
+
+@keyframes pulse {
+    0% { box-shadow: 0 0 0 0 rgba(79, 70, 229, 0.4); }
+    70% { box-shadow: 0 0 0 10px rgba(79, 70, 229, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(79, 70, 229, 0); }
+}
+
+.transaction-modal {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: white;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    z-index: 1000;
+}
+
+.transaction-modal label {
+    font-size: 1em;
+    font-weight: 600;
+    color: #1F2937;
+}
+
+.transaction-modal select {
+    padding: 8px;
+    border: 1px solid #E5E7EB;
+    border-radius: 8px;
+    font-size: 1em;
+    outline: none;
+}
+
+.transaction-modal button {
+    background: linear-gradient(135deg, #4F46E5, #818CF8);
+    color: white;
+    border: none;
+    padding: 12px;
+    border-radius: 8px;
+    font-size: 1em;
+    font-weight: 600;
+    cursor: pointer;
+    transition: transform 0.2s;
+}
+
+.transaction-modal button:hover {
+    transform: translateY(-2px);
+}
+
+/* Added for Gerenciar Contas button */
+#manage-accounts-btn {
+    background: linear-gradient(135deg, #4F46E5, #818CF8);
+    color: white;
+    border: none;
+    padding: 12px;
+    border-radius: 8px;
+    font-size: 0.7em;
+    font-weight: 600;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.3s;
+    display: inline-block;
+    margin-top: 10px;
+}
+
+#manage-accounts-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(79, 70, 229, 0.3);
+}
+
+/* Color for Entradas values */
+#entry-list .section-item-value {
+    color: #10B981; /* Green for entries value */
+}
+
+/* Added for section-item layout to match original entries style */
+.section-item {
     display: flex;
     justify-content: space-between;
     align-items: center;
     padding: 10px;
-    background: #f9f9f9;
-    margin-bottom: 10px;
+    background: #FFFFFF;
     border-radius: 8px;
+    margin-bottom: 8px;
+    font-size: 0.95em;
+    box-shadow: 0 1px 5px rgba(0, 0, 0, 0.05);
 }
 
-#category-list button {
-    background: #dc3545;
-    padding: 5px 10px;
-    font-size: 14px;
+.section-item-text {
+    color: #1F2937;
 }
 
-#category-list button:hover {
-    background: #c82333;
+.section-item-value {
+    color: #4F46E5;
+    font-weight: 600;
 }
 
-#summary-details {
-    margin-top: 20px;
+/* Estilos para as novas seções */
+.income-sources-section, .patrimony-section, .personal-costs-section {
+    border-radius: 12px;
+    padding: 15px;
+    margin-bottom: 20px;
+    background: #F9FAFB;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
 }
 
-canvas {
-    margin: 20px 0;
+.income-sources-section h2, .patrimony-section h2, .personal-costs-section h2 {
+    font-size: 1.3em;
+    font-weight: 600;
+    color: #1F2937;
+    margin-bottom: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
 
-@media (max-width: 600px) {
-    .container {
-        padding: 15px;
+/* Botões de gerenciar para as novas seções */
+#manage-income-sources-btn, #manage-patrimony-btn, #manage-personal-costs-btn {
+    background: linear-gradient(135deg, #4F46E5, #818CF8);
+    color: white;
+    border: none;
+    padding: 12px;
+    border-radius: 8px;
+    font-size: 0.7em;
+    font-weight: 600;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.3s;
+    display: inline-block;
+}
+
+#manage-income-sources-btn:hover, #manage-patrimony-btn:hover, #manage-personal-costs-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(79, 70, 229, 0.3);
+}
+
+/* Estilos para o formulário de despesa em vermelho */
+.expense-header {
+    background: linear-gradient(135deg, #EF4444, #FCA5A5) !important;
+}
+
+.expense-form {
+    border: 2px solid #FEE2E2;
+    border-radius: 12px;
+    padding: 20px;
+    background: #FEF2F2;
+}
+
+.expense-form input, .expense-form select {
+    border: 1px solid #FECACA;
+    background: #FFFFFF;
+}
+
+.expense-form input:focus, .expense-form select:focus {
+    border-color: #EF4444;
+    box-shadow: 0 0 8px rgba(239, 68, 68, 0.2);
+}
+
+.expense-form button {
+    background: linear-gradient(135deg, #EF4444, #FCA5A5) !important;
+}
+
+.expense-form button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(239, 68, 68, 0.3);
+}
+
+/* Estilos para as transações com cores */
+.transaction-details {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+}
+
+.transaction-main {
+    color: #1F2937;
+    font-weight: 500;
+    margin-bottom: 4px;
+}
+
+.transaction-info {
+    color: #6B7280;
+    font-size: 0.85em;
+}
+
+/* Cores para valores de entrada e saída */
+.entry-value {
+    color: #10B981 !important; /* Verde para entradas */
+}
+
+.expense-value {
+    color: #EF4444 !important; /* Vermelho para saídas */
+}
+
+/* Responsividade para telas menores */
+@media (max-width: 480px) {
+    .menu-icon {
+        font-size: 0.9em;
+        gap: 4px;
     }
-
-    h1, h2 {
-        font-size: 1.5em;
+    
+    .menu-icon i {
+        font-size: 1.2em;
     }
-
-    input, select, button {
-        font-size: 14px;
-    }
-
-    .actions button, .report-actions button {
-        min-width: 100px;
+    
+    .menu-plus {
+        width: 45px;
+        height: 45px;
+        font-size: 1.3em;
     }
 }
+
+
+
+
+#clear-transactions-btn {
+    background: linear-gradient(135deg, #EF4444, #FCA5A5);
+    color: white;
+    border: none;
+    padding: 12px;
+    border-radius: 8px;
+    font-size: 1em;
+    font-weight: 600;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.3s;
+    width: 100%;
+    margin-top: 15px;
+    margin-bottom: 20px;
+}
+
+
+#clear-transactions-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(239, 68, 68, 0.3);
+}
+
+
+/* Estilos para a tela de registro de entrada */
+#register-entry-screen .screen-header {
+    background: linear-gradient(135deg, #10B981, #6EE7B7) !important;
+}
+
+#register-entry-screen .manage-form {
+    border: 2px solid #DCFCE7;
+    border-radius: 12px;
+    padding: 20px;
+    background: #F0FDF4;
+}
+
+#register-entry-screen .manage-form input, #register-entry-screen .manage-form select {
+    border: 1px solid #A7F3D0;
+    background: #FFFFFF;
+}
+
+#register-entry-screen .manage-form input:focus, #register-entry-screen .manage-form select:focus {
+    border-color: #10B981;
+    box-shadow: 0 0 8px rgba(16, 185, 129, 0.2);
+}
+
+#register-entry-screen .manage-form button {
+    background: linear-gradient(135deg, #10B981, #6EE7B7) !important;
+}
+
+#register-entry-screen .manage-form button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
+}
+
+
