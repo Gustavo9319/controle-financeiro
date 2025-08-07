@@ -370,6 +370,19 @@
         </div>
     </section>
 
+    <section id="item-movements-screen" class="hidden">
+        <div class="container">
+            <div class="screen-header">
+                <i class="fas fa-arrow-left" onclick="backToMain()"></i>
+                <h2 id="item-movements-title">Movimentações</h2>
+                <span id="item-movements-month" onclick="showItemMovementsMonthPicker()">Maio/2025 <i class="fas fa-chevron-down"></i></span>
+                <input type="month" id="item-movements-month-picker" class="hidden" onchange="updateItemMovementsMonth(this.value)">
+            </div>
+            <div class="section-total">Total: <span id="item-movements-total">R$ 0,00</span></div>
+            <div id="item-movements-list"></div>
+        </div>
+    </section>
+
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="script.js"></script>
 </body>
