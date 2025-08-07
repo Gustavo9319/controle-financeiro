@@ -575,6 +575,9 @@ function loadIncomeSourcesSection() {
     
     document.getElementById('income-sources-list').innerHTML = incomeSourcesHtml;
     document.getElementById('income-sources-total').textContent = `R$ ${totalIncomeSources.toFixed(2).replace('.', ',')}`;
+    
+    // Adicionar eventos de clique após carregar o HTML
+    setTimeout(() => addClickEventsToSectionItems(), 100);
 }
 
 function loadPatrimonySection() {
@@ -615,6 +618,9 @@ function loadPatrimonySection() {
     
     document.getElementById('patrimony-list').innerHTML = patrimonyHtml;
     document.getElementById('patrimony-total').textContent = `R$ ${totalPatrimony.toFixed(2).replace('.', ',')}`;
+    
+    // Adicionar eventos de clique após carregar o HTML
+    setTimeout(() => addClickEventsToSectionItems(), 100);
 }
 
 function loadPersonalCostsSection() {
@@ -655,6 +661,9 @@ function loadPersonalCostsSection() {
     
     document.getElementById('personal-costs-list').innerHTML = personalCostsHtml;
     document.getElementById('personal-costs-total').textContent = `R$ ${Math.abs(totalPersonalCosts).toFixed(2).replace('.', ',')}`;
+    
+    // Adicionar eventos de clique após carregar o HTML
+    setTimeout(() => addClickEventsToSectionItems(), 100);
 }
 
 // Funções de gerenciamento das novas seções
@@ -1149,4 +1158,144 @@ document.getElementById('clear-transactions-btn').addEventListener('click', () =
     }
 });
 
+
+
+
+// Variáveis globais para controlar a tela de movimentações de item
+let currentItemSection = '';
+let currentItemName = '';
+
+// Função para mostrar movimentações de um item específico
+function showItemMovements(section, itemName) {
+    currentItemSection = section;
+    currentItemName = itemName;
+    
+    document.getElementById('main-screen').classList.add('hidden');
+    document.getElementById('item-movements-screen').classList.remove('hidden');
+    
+    // Atualizar o título da tela
+    let sectionTitle = '';
+    switch(section) {
+        case 'incomeSources':
+            sectionTitle = 'Fonte de Renda';
+            break;
+        case 'patrimony':
+            sectionTitle = 'Patrimônio';
+            break;
+        case 'personalCosts':
+            sectionTitle = 'Custos Pessoais';
+            break;
+    }
+    
+    document.getElementById('item-movements-title').textContent = `${sectionTitle}: ${itemName}`;
+    
+    // Atualizar o display do mês na tela de movimentações de item
+    const now = new Date();
+    const month = now.toLocaleString("pt-BR", { month: "long" }).charAt(0).toUpperCase() + now.toLocaleString("pt-BR", { month: "long" }).slice(1);
+    const year = now.getFullYear();
+    document.getElementById("item-movements-month").innerHTML = `<i class="fas fa-calendar-alt"></i> ${month}/${year} <i class="fas fa-chevron-down"></i>`;
+    document.getElementById("item-movements-month-picker").value = `${year}-${String(now.getMonth() + 1).padStart(2, "0")}`;
+    
+    // Carregar as movimentações
+    loadItemMovementsList();
+}
+
+// Função para carregar a lista de movimentações do item
+function loadItemMovementsList() {
+    const monthYear = document.getElementById('item-movements-month').textContent.match(/([A-Za-z]+)\/(\d+)/);
+    if (!monthYear) {
+        console.error('Failed to parse month/year from item-movements-month:', document.getElementById('item-movements-month').textContent);
+        return;
+    }
+    
+    const monthName = monthYear[1];
+    const year = monthYear[2];
+    const monthNumber = monthMap[monthName];
+    if (!monthNumber) {
+        console.error('Invalid month name:', monthName);
+        return;
+    }
+    
+    const currentMonth = `${year}-${monthNumber}`;
+    
+    // Filtrar movimentações do item específico
+    const itemMovements = expenses.filter(e => 
+        e.section === currentItemSection && 
+        e.category === currentItemName && 
+        e.date.startsWith(currentMonth)
+    );
+    
+    // Ordenar por data (mais recentes primeiro)
+    itemMovements.sort((a, b) => new Date(b.date) - new Date(a.date));
+    
+    // Calcular total
+    const total = itemMovements.reduce((sum, e) => sum + e.amount, 0);
+    
+    // Gerar HTML das movimentações
+    const movementsHtml = itemMovements.map(e => {
+        const isEntry = e.type === 'entrada';
+        const symbol = isEntry ? '+' : '-';
+        const colorClass = isEntry ? 'entry-value' : 'expense-value';
+        
+        return `
+            <div class="section-item">
+                <div class="transaction-details">
+                    <div class="transaction-main">${e.date} - ${e.description}</div>
+                    <div class="transaction-info">Conta: ${e.account}</div>
+                </div>
+                <span class="section-item-value ${colorClass}">${symbol}R$ ${Math.abs(e.amount).toFixed(2).replace('.', ',')}</span>
+            </div>
+        `;
+    }).join('');
+    
+    // Atualizar a interface
+    document.getElementById('item-movements-list').innerHTML = movementsHtml || '<p style="text-align: center; color: #6B7280; padding: 20px;">Nenhuma movimentação encontrada para este item no período selecionado.</p>';
+    document.getElementById('item-movements-total').textContent = `R$ ${Math.abs(total).toFixed(2).replace('.', ',')}`;
+}
+
+// Função para mostrar o seletor de mês das movimentações de item
+function showItemMovementsMonthPicker() {
+    document.getElementById('item-movements-month-picker').classList.remove('hidden');
+}
+
+// Função para atualizar o mês das movimentações de item
+function updateItemMovementsMonth(value) {
+    const [year, month] = value.split('-');
+    const monthName = new Date(value).toLocaleString('pt-BR', { month: 'long' }).charAt(0).toUpperCase() + new Date(value).toLocaleString('pt-BR', { month: 'long' }).slice(1);
+    document.getElementById('item-movements-month').innerHTML = `<i class="fas fa-calendar-alt"></i> ${monthName}/${year} <i class="fas fa-chevron-down"></i>`;
+    loadItemMovementsList();
+}
+
+// Função para adicionar eventos de clique aos itens das seções
+function addClickEventsToSectionItems() {
+    // Adicionar eventos para Fontes de Renda
+    document.querySelectorAll('#income-sources-list .section-item').forEach((item, index) => {
+        if (incomeSources[index]) {
+            item.style.cursor = 'pointer';
+            item.addEventListener('click', () => {
+                showItemMovements('incomeSources', incomeSources[index].name);
+            });
+        }
+    });
+    
+    // Adicionar eventos para Patrimônio
+    document.querySelectorAll('#patrimony-list .section-item').forEach((item, index) => {
+        if (patrimony[index]) {
+            item.style.cursor = 'pointer';
+            item.addEventListener('click', () => {
+                showItemMovements('patrimony', patrimony[index].name);
+            });
+        }
+    });
+    
+    // Adicionar eventos para Custos Pessoais
+    document.querySelectorAll('#personal-costs-list .section-item').forEach((item, index) => {
+        if (personalCosts[index]) {
+            item.style.cursor = 'pointer';
+            item.addEventListener('click', () => {
+                showItemMovements('personalCosts', personalCosts[index].name);
+            });
+        }
+    });
+}
 
