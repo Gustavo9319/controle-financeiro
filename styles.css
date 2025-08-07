@@ -683,3 +683,21 @@ hr {
 }
 
 
+
+/* Estilos para itens clicáveis das seções */
+#income-sources-list .section-item:hover,
+#patrimony-list .section-item:hover,
+#personal-costs-list .section-item:hover {
+    background: #F3F4F6;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    transition: all 0.2s ease;
+}
+
+#income-sources-list .section-item,
+#patrimony-list .section-item,
+#personal-costs-list .section-item {
+    transition: all 0.2s ease;
+    cursor: pointer;
+}
+
